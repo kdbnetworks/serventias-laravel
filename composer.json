@@ -1,0 +1,35 @@
+{
+    "name": "kdbnetworks/serventias-laravel",
+    "description": "Catálogo das serventias extrajudiciais do Brasil (CNJ/Justiça Aberta) para Laravel: migration, importador, busca e um farol de sanidade para o painel.",
+    "keywords": ["laravel", "cartorio", "serventia", "cns", "cnj", "justica-aberta", "reurb"],
+    "license": "MIT",
+    "type": "library",
+    "homepage": "https://github.com/kdbnetworks/serventias-laravel",
+    "authors": [{"name": "KDB Networks"}],
+    "require": {
+        "php": "^8.3",
+        "illuminate/support": "^12.0|^13.0",
+        "illuminate/database": "^12.0|^13.0",
+        "illuminate/console": "^12.0|^13.0",
+        "illuminate/http": "^12.0|^13.0",
+        "ext-zlib": "*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.0|^11.0",
+        "phpunit/phpunit": "^11.5|^12.0"
+    },
+    "autoload": {
+        "psr-4": {"KdbNetworks\\Serventias\\": "src/"}
+    },
+    "autoload-dev": {
+        "psr-4": {"KdbNetworks\\Serventias\\Tests\\": "tests/"}
+    },
+    "extra": {
+        "laravel": {
+            "providers": ["KdbNetworks\\Serventias\\ServentiasServiceProvider"]
+        }
+    },
+    "config": {"sort-packages": true},
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
