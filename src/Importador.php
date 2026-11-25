@@ -235,22 +235,59 @@ class Importador
         return null;
     }
 
-    /** O `.csv.gz` mais recente trazido por `serventias:baixar`, pelo nome (a versão é a data). */
+    /**
+     * O `.csv.gz` mais recente trazido por `serventias:baixar`, pelo nome (a versão é a data).
+     *
+     * O disco pode não ser local (no Matrize, o disco `local` é um bucket S3): aí
+     * `path()` devolve a chave do bucket, que não é arquivo nenhum, e o
+     * `resolverArquivo()` caía no snapshot em silêncio. Nesse caso o arquivo vem
+     * para um temporário local, com o mesmo nome, e é esse que se importa.
+     */
     public function ultimoBaixado(): ?string
     {
         try {
             $disco = Storage::disk((string) config('serventias.armazenamento.disco', 'local'));
             $pasta = (string) config('serventias.armazenamento.pasta', 'serventias');
-            $arquivos = array_filter($disco->files($pasta), fn ($f) => str_ends_with($f, '.csv.gz'));
+            $arquivos = array_values(array_filter($disco->files($pasta), fn ($f) => str_ends_with($f, '.csv.gz')));
             if ($arquivos === []) {
                 return null;
             }
             rsort($arquivos);
 
-            return $disco->path($arquivos[0]);
+            $caminho = $disco->path($arquivos[0]);
+            if (is_file($caminho)) {
+                return $caminho;
+            }
+
+            return $this->trazerParaLocal($disco, $arquivos[0]);
         } catch (\Throwable) {
             return null;
         }
+    }
+
+    private function trazerParaLocal(\Illuminate\Contracts\Filesystem\Filesystem $disco, string $chave): ?string
+    {
+        $dir = sys_get_temp_dir().DIRECTORY_SEPARATOR.'serventias-laravel';
+        if (! is_dir($dir) && ! @mkdir($dir, 0o700, true) && ! is_dir($dir)) {
+            return null;
+        }
+        $local = $dir.DIRECTORY_SEPARATOR.basename($chave);
+
+        $origem = $disco->readStream($chave);
+        if (! is_resource($origem)) {
+            return null;
+        }
+        $destino = @fopen($local, 'wb');
+        if ($destino === false) {
+            fclose($origem);
+
+            return null;
+        }
+        stream_copy_to_stream($origem, $destino);
+        fclose($origem);
+        fclose($destino);
+
+        return $local;
     }
 
     private function registrar(string $resultado, Opcoes $o, Carbon $inicio, string $arquivo, ?Resultado $r, ?string $mensagem = null): Resultado

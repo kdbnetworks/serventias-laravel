@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1 — 2026-11-25
+
+- A coleta baixada num disco que não é local (S3, por exemplo) agora é a que
+  se importa. O importador perguntava `is_file()` sobre a chave do bucket, não
+  achava e caía no snapshot do repositório em silêncio: o «baixar e importar»
+  baixava a coleta nova e importava a antiga. Agora o arquivo vem para um
+  temporário local antes da leitura.
+
 ## 0.2.0 — 2026-11-25
 
 - Colunas novas, numa migration que só acrescenta o que faltar:
