@@ -31,9 +31,11 @@ class ServentiasServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'serventias');
         Blade::anonymousComponentPath(__DIR__.'/../resources/views/components', 'serventias');
 
-        if ($this->app->runningInConsole()) {
-            $this->commands([Importar::class, Status::class, Baixar::class, Sondar::class]);
+        // Fora do guarda de console: um painel chama estes comandos por
+        // Artisan::call() num pedido web, e eles precisam existir lá também.
+        $this->commands([Importar::class, Status::class, Baixar::class, Sondar::class]);
 
+        if ($this->app->runningInConsole()) {
             $this->publishes([__DIR__.'/../config/serventias.php' => config_path('serventias.php')], 'serventias-config');
             $this->publishes([__DIR__.'/../resources/views' => resource_path('views/vendor/serventias')], 'serventias-views');
         }

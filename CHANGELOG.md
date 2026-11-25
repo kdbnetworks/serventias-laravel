@@ -1,5 +1,11 @@
 # Changelog
 
+## Não lançada
+
+- Os quatro comandos passam a ser registrados também fora do console. O
+  provider só os registrava sob `runningInConsole()`, e um painel que os chama
+  por `Artisan::call()` num pedido web recebia «The command does not exist».
+
 ## 0.1.0 — 2026-09-13
 
 Primeira versão.
