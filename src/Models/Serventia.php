@@ -48,6 +48,12 @@ class Serventia extends Model
         return array_values(array_filter(explode('|', (string) $this->atribuicoes)));
     }
 
+    /** Os substitutos como lista: 'A|B' vira ['A', 'B']. */
+    public function substitutosLista(): array
+    {
+        return array_values(array_filter(array_map('trim', explode('|', (string) $this->substitutos))));
+    }
+
     public function temAtribuicao(string $flag): bool
     {
         return in_array($flag, $this->atribuicoesLista(), true);

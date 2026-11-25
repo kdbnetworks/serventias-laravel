@@ -30,7 +30,16 @@ class Sondar extends Command
         'denominacao_padrao', 'responsavel', 'natureza', 'website', 'endereco',
         'numero', 'bairro', 'cidade', 'uf', 'telefone', 'email', 'id',
         'cidade_id', 'cep', 'latitude', 'longitude', 'complemento',
+        // 11/2026: os quatro que a API passou a mandar
+        'tipo_cartorio', 'substitutos', 'cidade_comarca', 'cidade_comarca_uf',
     ];
+
+    /**
+     * As que a API deixou de mandar em 11/2026. O serventias-br herda o valor
+     * delas da coleta anterior; a sonda não as cobra, para não avisar o mesmo
+     * sumiço toda vez.
+     */
+    public const CHAVES_APOSENTADAS = ['id', 'latitude', 'longitude', 'cidade_id', 'complemento'];
 
     protected $signature = 'serventias:sondar {--uf=SC : a UF usada na sonda}';
 
@@ -95,9 +104,15 @@ class Sondar extends Command
 
             return self::FAILURE;
         }
+        // Chave conhecida que some não derruba a sonda (só as essenciais acima), mas é dita:
+        // o id e as coordenadas sumiram da API em 11/2026 sem que nada avisasse.
+        $ausentes = array_values(array_diff(self::CHAVES_CONHECIDAS, self::CHAVES_APOSENTADAS, $chaves));
+        if ($ausentes !== []) {
+            $this->warn('Chaves conhecidas que não vieram: '.implode(', ', $ausentes));
+        }
         if ($novas !== []) {
             $this->warn('Chaves novas, ainda não mapeadas pelo pipeline: '.implode(', ', $novas));
-        } else {
+        } elseif ($ausentes === []) {
             $this->info('Formato conhecido; nenhuma chave nova.');
         }
 

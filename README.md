@@ -23,6 +23,11 @@ A migration cria a tabela `serventias` e um diário `serventias_importacoes`.
 Se a sua aplicação já tinha uma tabela `serventias`, ela fica como está e
 recebe só as colunas que faltarem.
 
+Desde a 0.2.0 a tabela guarda também `tipo_cartorio` (PRIVATIZADO,
+OFICIALIZADO ou PUBLICO), `substitutos` (nomes separados por `|`; no modelo,
+`substitutosLista()`) e `comarca_uf`, que o serventias-br publica desde
+11/2026. Rode `php artisan migrate` ao atualizar.
+
 ## Colocar os dados
 
 Há dois jeitos, e dá para usar os dois.

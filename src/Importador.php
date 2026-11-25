@@ -60,6 +60,8 @@ class Importador
         'bairro', 'cep', 'telefone', 'email', 'website', 'responsavel',
         'comarca', 'circunscricao', 'codigo_ibge', 'latitude', 'longitude',
         'id_cnj', 'fonte', 'coletado_em',
+        // 11/2026: o regime, os substitutos e a UF da comarca
+        'tipo_cartorio', 'substitutos', 'comarca_uf',
     ];
 
     /** @var list<string> as colunas que a tabela realmente tem; o importador só grava nessas */
@@ -333,6 +335,7 @@ class Importador
             'status_raw' => $this->corta($r['status_raw'] ?? null, 40),
             'situacao_juridica' => $this->corta($r['situacao_juridica'] ?? null, 40),
             'situacao_juridica_raw' => $this->corta($r['situacao_juridica_raw'] ?? null, 80),
+            'tipo_cartorio' => $this->corta($r['tipo_cartorio'] ?? null, 20),
             'tipo_registro' => $this->corta($tipo, 24),
             'municipio' => $this->corta($r['municipio'] ?? null, 160),
             'uf' => $this->corta($r['uf'] ?? null, 2),
@@ -345,7 +348,9 @@ class Importador
             'email' => $this->corta($r['email'] ?? null, 160),
             'website' => $this->corta($r['website'] ?? null, 240),
             'responsavel' => $this->corta($r['responsavel'] ?? null, 200),
+            'substitutos' => $this->corta($r['substitutos'] ?? null, 4000),
             'comarca' => $this->corta($r['comarca'] ?? null, 160),
+            'comarca_uf' => $this->corta($r['comarca_uf'] ?? null, 2),
             'circunscricao' => $this->corta($r['circunscricao'] ?? null, 240),
             'codigo_ibge' => $this->corta($r['codigo_ibge'] ?? null, 12),
             'latitude' => $this->corta($r['latitude'] ?? null, 30),
