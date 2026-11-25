@@ -1,6 +1,6 @@
 # Changelog
 
-## Não lançada
+## 0.1.1 — 2026-11-25
 
 - Os quatro comandos passam a ser registrados também fora do console. O
   provider só os registrava sob `runningInConsole()`, e um painel que os chama
